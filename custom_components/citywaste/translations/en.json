@@ -1,0 +1,34 @@
+{
+    "title": "음식물 쓰레기 배출량 조회",
+    "config": {
+        "step": {
+            "confirm": {
+                "description": "Please enter all information below"
+            },
+            "user": {
+                "data": {
+                    "tag_id": "rfid card tag id",
+                    "dong": "enter your apt dong",
+                    "ho": "enter your apt ho",
+                    "price": "Enter price per kg",
+                    "refresh_period": "refresh period(minute)"
+                },
+                "description": "Click OK to add intergration"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "change information",
+                "data": {
+                    "tag_id": "rfid card tag id",
+                    "dong": "enter your apt dong",
+                    "ho": "enter your apt ho",
+                    "price": "Enter price per kg",
+                    "refresh_period": "refresh period(minute)"
+                }
+            }
+        }
+    }
+}
