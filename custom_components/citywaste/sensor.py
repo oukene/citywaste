@@ -153,7 +153,7 @@ class Device:
             self.entities[STYPE_LAST_KG]._value = lastkg
             self.entities[STYPE_LAST_KG]._extra_state_attributes["datetime"] = lastdt
             self.entities[STYPE_TOTAL_KG]._value = totalkg
-            self.entities[STYPE_TOTAL_PRICE]._value = int(totalkg * self._price / 10 * 10)
+            self.entities[STYPE_TOTAL_PRICE]._value = int((totalkg * self._price) - ((totalkg * self._price) % 10))
             self.entities[STYPE_TOTAL_PRICE]._extra_state_attributes["price per kg"] = self._price
             self.publish_updates()
 
