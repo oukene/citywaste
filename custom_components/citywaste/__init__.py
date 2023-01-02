@@ -36,6 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Store an instance of the "connecting" class that does the work of speaking
     # with your actual devices.
     _LOGGER.debug("call async_setup_entry")
+    hass.data[DOMAIN]["listener"] = {}
     hass.data[DOMAIN][entry.entry_id] = DOMAIN
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
