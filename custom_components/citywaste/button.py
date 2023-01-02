@@ -23,7 +23,7 @@ from .const import *
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
 from homeassistant.helpers.event import async_track_state_change, track_state_change
-from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
+from homeassistant.components.button import ButtonEntity
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -43,15 +43,10 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     new_devices = []
 
-    for stype in SENSOR_TYPES:
-        sensor = CityWasteSensor(hass, device, stype)
-        device.entities[stype] = sensor
-        new_devices.append(sensor)
+    button = CityWasteButton(hass, device)
+    new_devices.append(button)
 
     async_add_devices(new_devices)
-
-    device._loop = asyncio.get_event_loop()
-    Timer(1, device.refreshTimer).start()
 
 
 # This base class shows the common properties and methods for a sensor as used in this
@@ -59,7 +54,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 # have been overridden.
 
 
-class SensorBase(SensorEntity):
+class ButtonBase(ButtonEntity):
     """Base representation of a Hello World Sensor."""
 
     should_poll = False
@@ -102,20 +97,18 @@ class SensorBase(SensorEntity):
         self._device.remove_callback(self.async_write_ha_state)
 
 
-class CityWasteSensor(SensorBase):
+class CityWasteButton(ButtonBase):
     """Representation of a Thermal Comfort Sensor."""
 
-    def __init__(self, hass, device, sensor_type):
+    def __init__(self, hass, device):
         """Initialize the sensor."""
         super().__init__(device)
 
         self.hass = hass
 
         self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, sensor_type), hass=hass)
-        self._name = "{}".format(SENSOR_TYPES[sensor_type][0])
-        self._unit_of_measurement = SENSOR_TYPES[sensor_type][1]
-        self._icon = SENSOR_TYPES[sensor_type][2]
+            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, "refresh"), hass=hass)
+        self._name = "{}".format("refresh")
         self._state = None
         self._extra_state_attributes = {}
         self._value = 0
@@ -123,6 +116,9 @@ class CityWasteSensor(SensorBase):
         # self._device_class = SENSOR_TYPES[sensor_type][0]
         self._unique_id = self.entity_id
         self._device = device
+
+    def press(self):
+        self._device._loop.create_task(self._device.get_price())
 
     """Sensor Properties"""
     @property
@@ -135,11 +131,6 @@ class CityWasteSensor(SensorBase):
         return self._extra_state_attributes
 
     @property
-    def unit_of_measurement(self):
-        """Return the unit_of_measurement of the device."""
-        return self._unit_of_measurement
-
-    @property
     def name(self):
         """Return the name of the sensor."""
         return self._name
@@ -150,10 +141,6 @@ class CityWasteSensor(SensorBase):
         return self._value
 
     @property
-    def icon(self):
-        return self._icon
-
-    @property
     def unique_id(self) -> str:
         """Return a unique ID."""
         if self._unique_id is not None:
@@ -161,3 +148,5 @@ class CityWasteSensor(SensorBase):
 
     def update(self):
         """Update the state."""
+
+

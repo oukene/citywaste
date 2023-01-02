@@ -5,7 +5,9 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN
+from .const import *
+
+from .device import Device
 
 from homeassistant.helpers.device_registry import (
     async_get_registry,
@@ -16,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 
 # List of platforms to support. There should be a matching .py file for each,
 # eg <cover.py> and <sensor.py>
-PLATFORMS = ["sensor"]
+PLATFORMS = ["sensor", "button"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -37,6 +39,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = DOMAIN
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
+
+    tag_id = entry.data.get(CONF_TAG_ID)
+    dong = entry.data.get(CONF_DONG)
+    ho = entry.data.get(CONF_HO)
+    price = entry.data.get(CONF_PRICE)
+    refresh_period = entry.data.get(CONF_REFRESH_PERIOD)
+
+    if entry.options.get(CONF_TAG_ID) != None:
+        tag_id = entry.options.get(CONF_TAG_ID)
+        dong = entry.options.get(CONF_DONG)
+        ho = entry.options.get(CONF_HO)
+        price = entry.options.get(CONF_PRICE)
+        refresh_period = entry.options.get(CONF_REFRESH_PERIOD)
+
+    device = Device(hass, NAME, tag_id,
+                    dong, ho, price, refresh_period)
+
+    hass.data[DOMAIN]["device"] = device
 
     # This creates each HA object for each platform your device requires.
     # It's done by calling the `async_setup_entry` function in each platform module.

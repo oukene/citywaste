@@ -10,7 +10,7 @@ from homeassistant.const import (
 # name for the integration.
 DOMAIN = "citywaste"
 NAME = "citywaste"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 CONF_ADD_ANODHER = "add_another"
 
