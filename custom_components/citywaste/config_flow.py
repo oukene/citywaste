@@ -17,19 +17,8 @@ from datetime import datetime
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 
-import homeassistant.helpers.entity_registry
-
-from homeassistant.helpers.device_registry import (
-    async_get_registry,
-    async_entries_for_config_entry
-)
-
 from .const import *
 
-from homeassistant.helpers.device_registry import (
-    async_get_registry,
-    async_entries_for_config_entry
-)
 from homeassistant import config_entries, core, exceptions
 from homeassistant.core import callback
 

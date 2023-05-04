@@ -9,10 +9,6 @@ from .const import *
 
 from .device import Device
 
-from homeassistant.helpers.device_registry import (
-    async_get_registry,
-    async_entries_for_config_entry
-)
 
 _LOGGER = logging.getLogger(__name__)
 
