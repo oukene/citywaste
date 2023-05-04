@@ -1,5 +1,4 @@
 """Constants for the Detailed Hello World Push integration."""
-from typing import DefaultDict
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (

@@ -7,24 +7,13 @@
 # battery), the unit_of_measurement should match what's expected.
 import logging
 from threading import Timer
-from xmlrpc.client import boolean
 import aiohttp
-from typing import Optional
 
 import json
 import asyncio
 import datetime
-import math
-
-from .sensor import CityWasteSensor
-
-from homeassistant.helpers.entity import Entity
-from pkg_resources import get_provider
 
 from .const import *
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import Entity, async_generate_entity_id
-from homeassistant.helpers.event import async_track_state_change, track_state_change
 
 _LOGGER = logging.getLogger(__name__)
 
