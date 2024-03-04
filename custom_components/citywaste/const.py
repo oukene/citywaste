@@ -2,7 +2,7 @@
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (
-    MASS_KILOGRAMS
+    UnitOfMass
 )
 
 # This is the internal name of the integration, it should also match the directory
@@ -25,8 +25,8 @@ STYPE_TOTAL_COUNT = "total_count"
 STYPE_TOTAL_PRICE = "total_price"
 
 SENSOR_TYPES = {
-    STYPE_TOTAL_KG: ["총 배출량", MASS_KILOGRAMS, "mdi:scale"],
-    STYPE_LAST_KG: ["최근 배출량", MASS_KILOGRAMS, "mdi:scale"],
+    STYPE_TOTAL_KG: ["총 배출량", UnitOfMass.KILOGRAMS, "mdi:scale"],
+    STYPE_LAST_KG: ["최근 배출량", UnitOfMass.KILOGRAMS, "mdi:scale"],
     STYPE_TOTAL_COUNT: ["총 횟수", "회", "mdi:counter"],
     STYPE_TOTAL_PRICE: ["예상 요금", "원", "mdi:currency-krw"],
 }
