@@ -73,7 +73,7 @@ class Device:
             while pageIndex <= totalPageCount:
                 _LOGGER.debug(
                     f"page index - {pageIndex}, totalCount - {totalPageCount}")
-                async with aiohttp.ClientSession(headers=headers) as session:
+                async with aiohttp.ClientSession(headers=headers, connector=aiohttp.TCPConnector(ssl=False)) as session:
                     _LOGGER.debug("url : " + CONF_URL)
 
                     params = {
