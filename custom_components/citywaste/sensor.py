@@ -11,7 +11,7 @@ import asyncio
 
 from .const import *
 from homeassistant.components.sensor import SensorEntity
-
+from homeassistant.helpers.entity import async_generate_entity_id
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,13 +20,12 @@ _LOGGER = logging.getLogger(__name__)
 # the same time to the same list. This way only a single async_add_devices call is
 # required.
 
-#ENTITY_ID_FORMAT = "sensor" + ".{}"
-
+ENTITY_ID_FORMAT = "sensor" + ".{}"
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Add sensors for passed config_entry in HA."""
 
-    device = hass.data[DOMAIN]["device"]
+    device = hass.data[DOMAIN][config_entry.entry_id]
 
     new_devices = []
 
@@ -95,14 +94,22 @@ class CityWasteSensor(SensorBase):
     def __init__(self, hass, device, sensor_type):
         """Initialize the sensor."""
         super().__init__(device)
-
         self.hass = hass
         self._device = device
 
+        # 1. 이름은 한글("총 배출량" 등)로 예쁘게 UI에 표시되도록 둡니다.
         self._attr_name = f"{SENSOR_TYPES[sensor_type][0]}"
+        
+        # 2. HA가 한글 발음(cong_baeculryang)으로 ID를 자동 생성하지 못하도록, 
+        #    내부 영문 키값(sensor_type, 예: total_kg)을 사용해 ID를 강제 지정합니다.
+        self.entity_id = async_generate_entity_id(
+            "sensor.{}", f"{DOMAIN}_{sensor_type}", hass=hass
+        )
+
         self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type][1]
         self._attr_icon = SENSOR_TYPES[sensor_type][2]
-
+        
+        # unique_id는 그대로 유지!
         self._attr_unique_id = f"{DOMAIN}_{device.device_id}_{sensor_type}"
         
         self._attr_extra_state_attributes = {}

@@ -8,9 +8,11 @@
 import logging
 from .const import *
 from homeassistant.components.button import ButtonEntity
-
+from homeassistant.helpers.entity import async_generate_entity_id
 
 _LOGGER = logging.getLogger(__name__)
+
+ENTITY_ID_FORMAT = DOMAIN + ".{}"
 
 # See cover.py for more details.
 # Note how both entities for each roller sensor (battry and illuminance) are added at
@@ -20,7 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Add sensors for passed config_entry in HA."""
 
-    device = hass.data[DOMAIN]["device"]
+    device = hass.data[DOMAIN][config_entry.entry_id]
 
     new_devices = []
 
@@ -88,9 +90,11 @@ class CityWasteButton(ButtonBase):
         self.hass = hass
         self._device = device
 
-        # HA 최신 규격에 맞춘 변수 할당
+        self.entity_id = async_generate_entity_id(
+            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, "refresh"), hass=hass)
+
         self._attr_name = "Refresh"
-        
+
         # 기기 ID를 포함하여 절대 변하지 않는 고유 ID 생성
         self._attr_unique_id = f"{DOMAIN}_{device.device_id}_refresh_button"
 

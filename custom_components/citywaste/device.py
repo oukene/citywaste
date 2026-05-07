@@ -28,7 +28,7 @@ class Device:
 
     def __init__(self, hass, name, tag_id, dong, ho, price, refresh_period):
         """Init dummy roller."""
-        self._id = name
+        self._id = f"{dong}dong_{ho}ho_{tag_id}"
         self.name = name
         self._tag_id = tag_id
         self._dong = dong
