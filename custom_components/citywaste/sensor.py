@@ -10,7 +10,6 @@ from threading import Timer
 import asyncio
 
 from .const import *
-from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.components.sensor import SensorEntity
 
 
@@ -21,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 # the same time to the same list. This way only a single async_add_devices call is
 # required.
 
-ENTITY_ID_FORMAT = DOMAIN + ".{}"
+#ENTITY_ID_FORMAT = "sensor" + ".{}"
 
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
@@ -91,61 +90,28 @@ class SensorBase(SensorEntity):
 
 
 class CityWasteSensor(SensorBase):
-    """Representation of a Thermal Comfort Sensor."""
+    """Representation of a CityWaste Sensor."""
 
     def __init__(self, hass, device, sensor_type):
         """Initialize the sensor."""
         super().__init__(device)
 
         self.hass = hass
-
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, sensor_type), hass=hass)
-        self._name = "{}".format(SENSOR_TYPES[sensor_type][0])
-        self._unit_of_measurement = SENSOR_TYPES[sensor_type][1]
-        self._icon = SENSOR_TYPES[sensor_type][2]
-        self._state = None
-        self._extra_state_attributes = {}
-        self._value = 0
-
-        # self._device_class = SENSOR_TYPES[sensor_type][0]
-        self._unique_id = self.entity_id
         self._device = device
 
-    """Sensor Properties"""
+        self._attr_name = f"{SENSOR_TYPES[sensor_type][0]}"
+        self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type][1]
+        self._attr_icon = SENSOR_TYPES[sensor_type][2]
+
+        self._attr_unique_id = f"{DOMAIN}_{device.device_id}_{sensor_type}"
+        
+        self._attr_extra_state_attributes = {}
+        self._attr_native_value = None
+
     @property
     def has_entity_name(self) -> bool:
         return True
 
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._extra_state_attributes
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit_of_measurement of the device."""
-        return self._unit_of_measurement
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._value
-
-    @property
-    def icon(self):
-        return self._icon
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        if self._unique_id is not None:
-            return self._unique_id
-
     def update(self):
         """Update the state."""
+        pass

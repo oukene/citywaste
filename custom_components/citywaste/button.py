@@ -6,9 +6,7 @@
 # what the unit is, so it can display the correct range. For predefined types (such as
 # battery), the unit_of_measurement should match what's expected.
 import logging
-from xmlrpc.client import boolean
 from .const import *
-from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.components.button import ButtonEntity
 
 
@@ -18,9 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 # Note how both entities for each roller sensor (battry and illuminance) are added at
 # the same time to the same list. This way only a single async_add_devices call is
 # required.
-
-ENTITY_ID_FORMAT = DOMAIN + ".{}"
-
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Add sensors for passed config_entry in HA."""
@@ -84,53 +79,34 @@ class ButtonBase(ButtonEntity):
 
 
 class CityWasteButton(ButtonBase):
-    """Representation of a Thermal Comfort Sensor."""
+    """Representation of a CityWaste Refresh Button."""
 
     def __init__(self, hass, device):
-        """Initialize the sensor."""
+        """Initialize the button."""
         super().__init__(device)
 
         self.hass = hass
-
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, "refresh"), hass=hass)
-        self._name = "{}".format("refresh")
-        self._state = None
-        self._extra_state_attributes = {}
-        self._value = 0
-
-        # self._device_class = SENSOR_TYPES[sensor_type][0]
-        self._unique_id = self.entity_id
         self._device = device
 
-    def press(self):
-        self._device._loop.create_task(self._device.get_price())
+        # HA 최신 규격에 맞춘 변수 할당
+        self._attr_name = "Refresh"
+        
+        # 기기 ID를 포함하여 절대 변하지 않는 고유 ID 생성
+        self._attr_unique_id = f"{DOMAIN}_{device.device_id}_refresh_button"
+
+    @property
+    def has_entity_name(self) -> bool:
+        return True
+
+    # HA 권장 방식: 동기형 press() 대신 비동기형 async_press() 사용
+    async def async_press(self) -> None:
+        """Handle the button press."""
+        await self._device.get_price()
 
     """Sensor Properties"""
     @property
     def has_entity_name(self) -> bool:
         return True
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._extra_state_attributes
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._value
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        if self._unique_id is not None:
-            return self._unique_id
 
     def update(self):
         """Update the state."""

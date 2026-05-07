@@ -22,8 +22,6 @@ _LOGGER = logging.getLogger(__name__)
 # the same time to the same list. This way only a single async_add_devices call is
 # required.
 
-ENTITY_ID_FORMAT = DOMAIN + ".{}"
-
 
 class Device:
     """Dummy roller (device for HA) for Hello World example."""
@@ -107,13 +105,13 @@ class Device:
 
         finally:
             _LOGGER.debug("call next timer")
-            #Timer(self._refresh_period*60, self._loop.create_task(self.get_price())).start()
-            self.entities[STYPE_TOTAL_COUNT]._value = totalCount
-            self.entities[STYPE_LAST_KG]._value = lastkg
-            self.entities[STYPE_LAST_KG]._extra_state_attributes["datetime"] = lastdt
-            self.entities[STYPE_TOTAL_KG]._value = totalkg
-            self.entities[STYPE_TOTAL_PRICE]._value = int(totalkg * self._price / 10 * 10)
-            self.entities[STYPE_TOTAL_PRICE]._extra_state_attributes["price per kg"] = self._price
+            # _attr_state 대신 _attr_native_value 사용
+            self.entities[STYPE_TOTAL_COUNT]._attr_native_value = totalCount
+            self.entities[STYPE_LAST_KG]._attr_native_value = lastkg
+            self.entities[STYPE_LAST_KG]._attr_extra_state_attributes["datetime"] = lastdt
+            self.entities[STYPE_TOTAL_KG]._attr_native_value = totalkg
+            self.entities[STYPE_TOTAL_PRICE]._attr_native_value = int(totalkg * self._price / 10 * 10)
+            self.entities[STYPE_TOTAL_PRICE]._attr_extra_state_attributes["price per kg"] = self._price
             self.publish_updates()
 
     @property
@@ -131,10 +129,10 @@ class Device:
 
     # In a real implementation, this library would call it's call backs when it was
     # notified of any state changeds for the relevant device.
-    async def publish_updates(self):
-        """Schedule call all registered callbacks."""
-        for callback in self._callbacks:
-            callback()
+    # async def publish_updates(self):
+    #     """Schedule call all registered callbacks."""
+    #     for callback in self._callbacks:
+    #         callback()
 
     def publish_updates(self):
         """Schedule call all registered callbacks."""
