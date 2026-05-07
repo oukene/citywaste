@@ -12,8 +12,6 @@ from homeassistant.helpers.entity import async_generate_entity_id
 
 _LOGGER = logging.getLogger(__name__)
 
-ENTITY_ID_FORMAT = DOMAIN + ".{}"
-
 # See cover.py for more details.
 # Note how both entities for each roller sensor (battry and illuminance) are added at
 # the same time to the same list. This way only a single async_add_devices call is
@@ -91,7 +89,7 @@ class CityWasteButton(ButtonBase):
         self._device = device
 
         self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, "{}_{}".format(DOMAIN, "refresh"), hass=hass)
+            "button" + ".{}", "{}_{}".format(DOMAIN, "refresh"), hass=hass)
 
         self._attr_name = "Refresh"
 

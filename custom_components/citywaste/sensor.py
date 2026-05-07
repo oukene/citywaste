@@ -20,8 +20,6 @@ _LOGGER = logging.getLogger(__name__)
 # the same time to the same list. This way only a single async_add_devices call is
 # required.
 
-ENTITY_ID_FORMAT = "sensor" + ".{}"
-
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Add sensors for passed config_entry in HA."""
 
@@ -103,7 +101,7 @@ class CityWasteSensor(SensorBase):
         # 2. HA가 한글 발음(cong_baeculryang)으로 ID를 자동 생성하지 못하도록, 
         #    내부 영문 키값(sensor_type, 예: total_kg)을 사용해 ID를 강제 지정합니다.
         self.entity_id = async_generate_entity_id(
-            "sensor.{}", f"{DOMAIN}_{sensor_type}", hass=hass
+            "sensor" + ".{}", f"{DOMAIN}_{sensor_type}", hass=hass
         )
 
         self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type][1]
